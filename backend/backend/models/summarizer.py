@@ -7,3 +7,9 @@ class TextInput(BaseModel):
 # Text output of the model
 class SummarizeTextResponse(BaseModel):
     summary: str
+
+
+# Columns for the db
+# id: int
+# summary: str
+# created_at: datetime
