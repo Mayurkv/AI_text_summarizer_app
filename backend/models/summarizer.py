@@ -8,8 +8,7 @@ class TextInput(BaseModel):
 class SummarizeTextResponse(BaseModel):
     summary: str
 
-
-# Columns for the db
-# id: int
-# summary: str
-# created_at: datetime
+# Input for the save_summary endpoint
+class SummaryBase(BaseModel):
+    title: str
+    summary: str
