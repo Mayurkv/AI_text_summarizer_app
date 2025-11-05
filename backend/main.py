@@ -1,10 +1,15 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
-from models.summarizer import TextInput, SummarizeTextResponse
+from sqlalchemy.orm import Session
+from models.summarizer import TextInput, SummarizeTextResponse, SummaryBase
+from models.models import SummaryModel
+from database import Base, engine, get_db
+
+Base.metadata.create_all(bind=engine)
 
 # Load env variables
 load_dotenv()
@@ -45,3 +50,11 @@ def summarize_text(payload: TextInput):
         return SummarizeTextResponse(summary=summarized_text)
     except Exception as e:
         raise HTTPException(status_code = 500, detail = str(e))
+    
+@app.post("/save_summary")
+def save_summary(summary: SummaryBase, db: Session = Depends(get_db)):
+    db_summary = SummaryModel(**summary.model_dump())
+    db.add(db_summary)
+    db.commit()
+    db.refresh(db_summary)
+    return db_summary
