@@ -4,8 +4,9 @@ const Summary = () => {
   const [inputText, setInputText] = useState<string>("");
   const [summary, setSummary] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!inputText.trim()) {
@@ -13,10 +14,35 @@ const Summary = () => {
       return;
     }
 
-    const mockSummary = `Summary: ${inputText.substring(0, 100)}...`;
+    // const mockSummary = `Summary: ${inputText.substring(0, 100)}...`;
+    // setSummary(mockSummary);
 
-    setSummary(mockSummary);
-    setIsSubmitted(true);
+    setLoading(true);
+    setIsSubmitted(false);
+
+    try {
+      const response = await fetch("http://localhost:8000/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({text: inputText}),
+      }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP ERROR! Status: ${response.status}`)
+      };
+
+      const data = await response.json();
+      setSummary(data.summary);
+      setIsSubmitted(true);
+    } catch (error: any) {
+      console.error("Error: ", error)
+      alert("Failed to summarize. Please try again.")
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

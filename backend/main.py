@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
@@ -10,8 +11,16 @@ load_dotenv()
 
 app = FastAPI(title="Text Summarizer App")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 client = OpenAI(
-    base_url = os.getenv("OPENAI_API_BASE", "https://api.groq.com/openai/v1"),
+    base_url = os.getenv("OPENAI_API_BASE"),
     api_key = os.getenv("OPENAI_API_KEY")
 )
 
@@ -24,7 +33,7 @@ def summarize_text(payload: TextInput):
     user_prompt = f"Please summarize the following text:\n{payload.text}"
     try:
         response = client.chat.completions.create(
-            model = os.getenv("MODEL", "llama-3.3-70b-versatile"),
+            model = os.getenv("MODEL"),
             messages = [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
