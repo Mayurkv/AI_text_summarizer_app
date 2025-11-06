@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 from sqlalchemy.orm import Session
-from models.summarizer import TextInput, SummarizeTextResponse, SummaryBase
+from models.summarizer import AllSummariesResponse, TextInput, SummarizeTextResponse, SummaryBase
 from models.models import SummaryModel
 from database import Base, engine, get_db
 
@@ -28,6 +28,12 @@ client = OpenAI(
     base_url = os.getenv("OPENAI_API_BASE"),
     api_key = os.getenv("OPENAI_API_KEY")
 )
+
+@app.get("/all_summaries", response_model=AllSummariesResponse)
+def all_summaries(db: Session = Depends(get_db)):
+    summaries = db.query(SummaryModel).all()
+    return {"summaries": summaries}
+
 
 @app.post("/summarize", response_model=SummarizeTextResponse)
 def summarize_text(payload: TextInput):
