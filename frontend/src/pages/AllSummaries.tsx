@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+interface Summary {
+  id: number;
+  title: string;
+  summary: string;
+}
+
 const AllSummaries = () => {
-    const [data, setData] = useState<any>([])
+    const [data, setData] = useState<Summary[]>([])
     const [loading, setLoading] = useState(true);
     
     useEffect(() => {
@@ -20,11 +26,6 @@ const AllSummaries = () => {
     }, []);
 
     if (loading) return <p className="text-white text-xl">Loading...</p>;
-//   const data = [
-//     { id: 1, title: "Alphabets", summary: "ABC" },
-//     { id: 2, title: "Whole Numbers", summary: "012" },
-//     { id: 3, title: "Natural Numbers", summary: "123" },
-//   ];
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-gray-900 p-8">
@@ -49,7 +50,7 @@ const AllSummaries = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((row) => (
+              {data.map((row: Summary) => (
                 <tr
                   key={row.id}
                   className="border-t border-gray-700 hover:bg-gray-700/60 transition"
