@@ -1,4 +1,6 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react"
+
 
 const Summary = () => {
   const [inputText, setInputText] = useState<string>("");

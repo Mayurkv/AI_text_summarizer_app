@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
-import Home from './pages/home'
-import Summary from './pages/summary'
+import Home from './pages/Home'
+import Summary from './pages/Summary'
 import AllSummaries from './pages/AllSummaries'
 
 function App() {
